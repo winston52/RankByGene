@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Checkpoints / weights / data (download separately)
+model_checkpoint/
+*.ckpt
+*.pt
+*.pth
+*.h5ad
+
+# Experiment outputs
+experiment*/
+logs/
+features/
+rank_orders/
+
+# local test outputs
+tmp/
