@@ -9,17 +9,18 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </div>
 
-<p align="center">
-  <img src="figures/framework.png" width="95%">
-</p>
-
 ## Introduction
 
 **RankByGene** learns gene-informed histopathology image representations by aligning image and gene features through a **cross-modal ranking-consistency loss** that preserves the relative ordering of pairwise similarities across modalities, together with an **intra-modal teacher–student distillation** that stabilizes the image-branch representation. The learned features improve downstream gene expression prediction, slide-level classification, and survival analysis.
 
+<p align="center">
+  <img src="figures/framework.png" width="95%">
+</p>
+
 ## Recent Updates
 
-- **2026/06/21**: Released the gene–image alignment training, feature extraction, and end-to-end data preprocessing code.
+- **2026/06/21**: Released the gene–image alignment training and feature extraction code.
+- **2026/06/19**: Released the data preprocessing code.
 
 ## Install
 
@@ -94,7 +95,3 @@ Our work builds upon and is grateful to the following projects: [HEST-1k](https:
   year    = {2026}
 }
 ```
-
-## License
-
-This project is released under the [MIT License](LICENSE).
