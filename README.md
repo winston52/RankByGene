@@ -40,9 +40,9 @@ We use the publicly available [**HEST-1k**](https://github.com/mahmoodlab/HEST) 
 
 After downloading the raw HEST-1k data (per-slide `.h5ad` expression and ST-patch `.h5` files), run the preprocessing script `data_preprocessing/preprocess_hest.py`, which:
 
-- converts each `.h5ad` slide to an expression CSV and a spotfile;
-- extracts per-spot PNG patches;
-- subsets the expression to the survival gene list and applies 8-neighborhood smoothing,
+- converts each `.h5ad` slide to an expression CSV and a spotfile
+- extracts per-spot PNG patches
+- subsets the expression to the survival gene list and applies 8-neighborhood smoothing
 
 to produce the per-spot expression for training.
 
@@ -68,7 +68,14 @@ Train the gene-guided image encoder with `train.py`, which optimizes the cross-m
 python train.py --config configs/breast_rankinfots_survival.yaml
 ```
 
-Before training, set the following fields in `configs/*.yaml`: `MODEL.pretrained_model_path` (UNI backbone weights), `DATASET.train_dataset_path` (preprocessed dataset root), `DATASET.gene_path` (per-spot gene-list expression), and `EXPERIMENT_DIR` (output directory). Checkpoints are saved every 5 epochs (plus `last.ckpt`). Configs for both datasets are provided: `configs/breast_rankinfots_survival.yaml` and `configs/lung_rankinfots_survival.yaml`.
+Before training, set the following fields in `configs/*.yaml`:
+
+- `MODEL.pretrained_model_path` (UNI backbone weights)
+- `DATASET.train_dataset_path` (preprocessed dataset root)
+- `DATASET.gene_path` (per-spot gene-list expression)
+- `EXPERIMENT_DIR` (output directory)
+
+Checkpoints are saved every 5 epochs. Configs for both datasets are provided: `configs/breast_rankinfots_survival.yaml` and `configs/lung_rankinfots_survival.yaml`.
 
 ### 3. Feature Extraction
 
