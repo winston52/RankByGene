@@ -82,7 +82,9 @@ Checkpoints are saved every 5 epochs. Configs for both datasets are provided: `c
 
 `feature_extraction.py` extracts the teacher-branch image features (1024-dim) from a trained checkpoint. It has two modes.
 
-**(a) Gene-prediction features** (`--mode gene`) — pairs each spot patch with its gene expression and writes one CSV per slide, the layout consumed by `gene_prediction.py`:
+**(a) Gene-prediction features** (`--mode gene`)
+
+Pairs each spot patch with its gene expression and writes one CSV per slide, the layout consumed by `gene_prediction.py`:
 
 ```bash
 python feature_extraction.py --mode gene \
@@ -91,29 +93,43 @@ python feature_extraction.py --mode gene \
     --train_gene_path  ./data/HEST/Breast/ST-expression/survival/8n \
     --test_patch_path  ./data/HEST/Breast/test/ST-patches \
     --test_gene_path   ./data/HEST/Breast/test/ST-expression/survival/8n \
-    --checkpoint ./checkpoints/rankbygene_breast.ckpt \
+    --checkpoint path/to/encoder \
     --feature_save_dir ./features --model_name rankbygene
 ```
 
-**(b) Whole-slide features for MIL** (`--mode patch`) — embeds every patch of a whole-slide image (gene-free) and writes one `.h5` per WSI (`features` [N, 1024], `barcodes` [N], and `coords` [N, 2] when patches are named `x_y`). Both `.png` and `.jpeg` patches are supported:
+**(b) Whole-slide features for MIL** (`--mode patch`)
+
+Extract features for every patch of a whole-slide image (gene-free) and write one `.h5` per WSI (`features` [N, 1024], `patch_ids` [N], and `coords` [N, 2] when patches are named `x_y`). Both `.png` and `.jpeg` patches are supported.
+
+`--patch_dir` points to a directory of pre-tiled patches. It may be a single WSI folder, or a parent directory holding one sub-folder of patches per WSI; one `<wsi_id>.h5` is written per WSI. The expected layout:
+
+```
+path/to/patch/
+├── WSI_1/
+│   ├── 0_0.jpeg
+│   ├── 0_1.jpeg
+│   └── ...
+├── WSI_2/
+│   ├── 0_0.png
+│   └── ...
+└── ...
+```
 
 ```bash
 python feature_extraction.py --mode patch \
-    --patch_dir ./data/WSI/single_b20_t20 \
-    --checkpoint ./checkpoints/rankbygene_breast.ckpt \
+    --patch_dir path/to/patch \
+    --checkpoint path/to/encoder \
     --output_dir ./features_h5
 ```
 
-`--patch_dir` may be a single WSI folder, or a parent directory holding one sub-folder of patches per WSI (one `<wsi_id>.h5` is written per WSI).
-
-**Single-patch API** (UNI-style) — embed an individual image:
+**Extract feature for a single patch**
 
 ```python
 import torch
 from PIL import Image
 from feature_extraction import get_encoder, get_transform, extract_features
 
-encoder = get_encoder("./checkpoints/rankbygene_breast.ckpt").cuda().eval()
+encoder = get_encoder("path/to/encoder").cuda().eval()
 transform = get_transform()
 
 image = Image.open("patch.png").convert("RGB")

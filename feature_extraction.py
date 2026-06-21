@@ -15,7 +15,7 @@ covers three use cases:
 
 3. Whole-slide features for MIL (``--mode patch``)
    Embeds every patch of a whole-slide image (gene-free) and writes one ``.h5``
-   per WSI (``features`` [N, 1024], ``barcodes`` [N], and ``coords`` [N, 2] when
+   per WSI (``features`` [N, 1024], ``patch_ids`` [N], and ``coords`` [N, 2] when
    the patch names encode ``x_y``) for downstream MIL / slide-level frameworks.
    Patches are named ``x_y.png`` / ``x_y.jpeg`` (any trailing field like ``x_y_0``
    is ignored when parsing coords); both ``.jpeg`` and ``.png`` are supported.
@@ -203,7 +203,7 @@ class PatchFolder(Dataset):
         return self.transform(image), os.path.splitext(fname)[0]
 
 
-def _parse_coords(barcodes):
+def _parse_coords(patch_ids):
     """Parse the (x, y) coordinate from patch names.
 
     Patches are expected to be named ``x_y`` (e.g. ``12_34.png``); only the first
@@ -211,7 +211,7 @@ def _parse_coords(barcodes):
     the ``_0`` in ``12_34_0`` is ignored. Returns an [N, 2] int array, or None if
     any name does not start with two integers."""
     coords = []
-    for b in barcodes:
+    for b in patch_ids:
         parts = b.split("_")
         if len(parts) >= 2 and parts[0].lstrip("-").isdigit() and parts[1].lstrip("-").isdigit():
             coords.append((int(parts[0]), int(parts[1])))
@@ -228,20 +228,20 @@ def extract_slide(encoder, patch_dir, out_h5, transform, batch_size=64, num_work
         return
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
-    feats, barcodes = [], []
+    feats, patch_ids = [], []
     with torch.inference_mode():
         for images, names in loader:
             images = images.cuda()
             features = extract_features(encoder, images)
             feats.append(features.cpu().numpy())
-            barcodes.extend(names)
+            patch_ids.extend(names)
     feats = np.concatenate(feats, axis=0).astype(np.float32)
-    coords = _parse_coords(barcodes)
+    coords = _parse_coords(patch_ids)
 
     os.makedirs(os.path.dirname(out_h5) or ".", exist_ok=True)
     with h5py.File(out_h5, "w") as h:
         h.create_dataset("features", data=feats)
-        h.create_dataset("barcodes", data=np.array(barcodes, dtype="S"))
+        h.create_dataset("patch_ids", data=np.array(patch_ids, dtype="S"))
         if coords is not None:
             h.create_dataset("coords", data=coords)
     print(f"Saved {feats.shape[0]} x {feats.shape[1]} features to {out_h5}"
