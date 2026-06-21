@@ -13,10 +13,9 @@ def smooth_exp(cnt: pd.DataFrame):
         pd.DataFrame: smoothed expression in DataFrame. 
     """
 
-    # ids = cnt.index
     ids = cnt.index.str.split('x').map(lambda x: f"{int(x[0])}x{int(x[1])}")
-    # print(ids)
 
+    # the 8-neighborhood offsets plus the center spot itself
     delta = np.array([[1,0],
             [0,1],
             [-1,0],
@@ -31,13 +30,9 @@ def smooth_exp(cnt: pd.DataFrame):
 
     for i in range(len(cnt)):
         spot = cnt.iloc[i,:]
-        # print(f"Smoothing {spot.name}")    
         center = np.array(spot.name.split('x')).astype('int')
-        # print(center)
         neighbors = center - delta
-        # print(neighbors)
         neighbors = pd.DataFrame(neighbors).astype('str').apply(lambda x: "x".join(x), 1)
-        # print(neighbors)
         cnt_smooth[i,:] = cnt[ids.isin(neighbors)].mean(0)
         
     cnt_smooth = pd.DataFrame(cnt_smooth)

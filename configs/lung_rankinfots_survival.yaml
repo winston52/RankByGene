@@ -1,0 +1,30 @@
+TRAINING:
+  image_lr: 0.0001
+  gene_lr: 0.001
+  batch_size: 64
+  epochs: 100
+
+  loss: "rankInfoNCETS"
+  alpha: 10
+  beta: 1
+  ema_momentum: 0.96
+  gene_image_flag: True
+
+MODEL:
+  pretrained_model: "UNI"
+  pretrained_model_path: "./model_checkpoint/UNI"
+  gene_input_dim: 1916
+
+DATASET:
+  train_dataset: "lung"
+  train_dataset_path: "./data/HEST/Lung"
+  gene_path: "./data/HEST/Lung/ST-expression-survival/8n"
+  task: "survival"
+  smoothing: "8n"
+  num_workers: 4
+
+
+ACCELERATOR: "gpu"
+DEVICE: [0]
+
+EXPERIMENT_DIR: "./experiment_lung"

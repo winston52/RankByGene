@@ -1,0 +1,11 @@
+torch
+torchvision
+pytorch_lightning
+timm
+numpy
+pandas
+scipy
+Pillow
+h5py
+pyyaml
+scanpy
