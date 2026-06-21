@@ -84,17 +84,26 @@ Checkpoints are saved every 5 epochs. Configs for both datasets are provided: `c
 
 **(a) Gene-prediction features** (`--mode gene`)
 
-Pairs each spot patch with its gene expression and writes one CSV per slide, the layout consumed by `gene_prediction.py`:
+Pairs each spot patch with its gene expression and writes one CSV per slide, the layout consumed by `gene_prediction.py`. Run it once per split (e.g. `train` and the held-out `test`):
 
 ```bash
+# training split
 python feature_extraction.py --mode gene \
-    --train_dataset_name breast --test_dataset_name breast \
-    --train_patch_path ./data/HEST/Breast/ST-patches \
-    --train_gene_path  ./data/HEST/Breast/ST-expression/survival/8n \
-    --test_patch_path  ./data/HEST/Breast/test/ST-patches \
-    --test_gene_path   ./data/HEST/Breast/test/ST-expression/survival/8n \
+    --dataset_name breast \
+    --patch_path ./data/HEST/Breast/ST-patches \
+    --gene_path  ./data/HEST/Breast/ST-expression/survival/8n \
     --checkpoint path/to/encoder \
-    --feature_save_dir ./features --model_name rankbygene
+    --feature_save_dir ./features --model_name rankbygene \
+    --split_name train
+
+# test split
+python feature_extraction.py --mode gene \
+    --dataset_name breast \
+    --patch_path ./data/HEST/Breast/test/ST-patches \
+    --gene_path  ./data/HEST/Breast/test/ST-expression/survival/8n \
+    --checkpoint path/to/encoder \
+    --feature_save_dir ./features --model_name rankbygene \
+    --split_name test
 ```
 
 **(b) Whole-slide features for MIL** (`--mode patch`)

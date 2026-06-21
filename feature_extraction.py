@@ -34,16 +34,15 @@ Minimal single-patch usage (UNI-style)
     with torch.inference_mode():
         feature_emb = extract_features(encoder, image)   # [1, 1024]
 
-Gene-prediction features (one CSV per slide)
---------------------------------------------
+Gene-prediction features (one CSV per slide; run once per split)
+---------------------------------------------------------------
     python feature_extraction.py --mode gene \
-        --train_dataset_name breast --test_dataset_name breast \
-        --train_patch_path ./data/HEST/Breast/ST-patches \
-        --train_gene_path  ./data/HEST/Breast/ST-expression/survival/8n \
-        --test_patch_path  ./data/HEST/Breast/test/ST-patches \
-        --test_gene_path   ./data/HEST/Breast/test/ST-expression/survival/8n \
-        --checkpoint ./checkpoints/rankbygene_breast.ckpt \
-        --feature_save_dir ./features --model_name rankbygene
+        --dataset_name breast \
+        --patch_path ./data/HEST/Breast/ST-patches \
+        --gene_path  ./data/HEST/Breast/ST-expression/survival/8n \
+        --checkpoint path/to/encoder \
+        --feature_save_dir ./features --model_name rankbygene \
+        --split_name train
 
 Whole-slide features for MIL (one .h5 per WSI)
 ----------------------------------------------
@@ -171,14 +170,9 @@ def run_gene_mode(args):
     feature_save_dir = os.path.join(args.feature_save_dir, args.model_name)
     os.makedirs(feature_save_dir, exist_ok=True)
 
-    train_dataset = FineTune(args.train_dataset_name, args.train_patch_path, args.train_gene_path)
-    test_dataset = FineTune(args.test_dataset_name, args.test_patch_path, args.test_gene_path)
-    train_dataset.transform = TestTransform()
-    test_dataset.transform = TestTransform()
-
-    save_features_by_slide(encoder, train_dataset, os.path.join(feature_save_dir, 'train'),
-                           args.batch_size, args.num_workers)
-    save_features_by_slide(encoder, test_dataset, os.path.join(feature_save_dir, args.test_split_name),
+    dataset = FineTune(args.dataset_name, args.patch_path, args.gene_path)
+    dataset.transform = TestTransform()
+    save_features_by_slide(encoder, dataset, os.path.join(feature_save_dir, args.split_name),
                            args.batch_size, args.num_workers)
 
 
@@ -277,20 +271,18 @@ def main():
     parser.add_argument('--batch_size', type=int, default=64)
     parser.add_argument('--num_workers', type=int, default=8)
 
-    # --- gene mode ---
+    # --- gene mode (run once per split, e.g. train then test) ---
     g = parser.add_argument_group('gene mode')
-    g.add_argument('--train_dataset_name', type=str)
-    g.add_argument('--test_dataset_name', type=str)
-    g.add_argument('--train_patch_path', type=str)
-    g.add_argument('--train_gene_path', type=str)
-    g.add_argument('--test_patch_path', type=str)
-    g.add_argument('--test_gene_path', type=str)
+    g.add_argument('--dataset_name', type=str,
+                   help='Dataset key used for slide_id parsing (e.g. breast, lung).')
+    g.add_argument('--patch_path', type=str)
+    g.add_argument('--gene_path', type=str)
+    g.add_argument('--split_name', type=str, default='train',
+                   help='Sub-directory name for this split (e.g. train, test).')
     g.add_argument('--feature_save_dir', type=str, default='./features',
-                   help='Features are saved under <feature_save_dir>/<model_name>/{train,<test_split_name>}/.')
+                   help='Features are saved under <feature_save_dir>/<model_name>/<split_name>/.')
     g.add_argument('--model_name', type=str, default='rankbygene',
                    help='Label used for the feature sub-directory.')
-    g.add_argument('--test_split_name', type=str, default='test',
-                   help='Sub-directory name holding the external test features.')
 
     # --- patch mode ---
     p = parser.add_argument_group('patch mode')
@@ -302,8 +294,7 @@ def main():
     args = parser.parse_args()
 
     if args.mode == 'gene':
-        required = ['train_dataset_name', 'test_dataset_name', 'train_patch_path',
-                    'train_gene_path', 'test_patch_path', 'test_gene_path']
+        required = ['dataset_name', 'patch_path', 'gene_path']
         missing = [f"--{r}" for r in required if getattr(args, r) is None]
         if missing:
             parser.error(f"--mode gene requires: {', '.join(missing)}")
