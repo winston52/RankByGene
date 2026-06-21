@@ -170,7 +170,7 @@ python gene_prediction.py \
 
 ## 🤝 Acknowledgments
 
-Our work builds upon and is grateful to the following projects: [HEST-1k](https://github.com/mahmoodlab/HEST), [UNI](https://github.com/mahmoodlab/UNI), [BLEEP](https://github.com/bowang-lab/BLEEP), and [Human Protein Atlas](https://www.proteinatlas.org/).
+Our work builds upon and is grateful to the following projects: [HEST-1k](https://github.com/mahmoodlab/HEST), [UNI](https://github.com/mahmoodlab/UNI), and [BLEEP](https://github.com/bowang-lab/BLEEP).
 
 ## ✏️ Reference
 
