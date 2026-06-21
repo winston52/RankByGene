@@ -1,13 +1,17 @@
-## RankByGene: Gene-Guided Histopathology Representation Learning Through Cross-Modal Ranking Consistency
+<div align="center">
+<h1> RankByGene: Gene-Guided Histopathology Representation Learning Through Cross-Modal Ranking Consistency </h1>
 
 [Wentao Huang](https://winston52.github.io/)<sup>1</sup>, [Meilong Xu](https://melon-xu.github.io/)<sup>1</sup>, [Xiaoling Hu](https://huxiaoling.github.io/)<sup>2</sup>, [Shahira Abousamra](https://shahiraabousamra.github.io/)<sup>3</sup>, [Aniruddha Ganguly](https://scholar.google.com/citations?user=T1UcV2gAAAAJ&hl=en)<sup>1</sup>, [Saarthak Kapse](https://saarthak-kapse.github.io/)<sup>1</sup>, [Alisa Yurovsky](https://ayurovsky.github.io/)<sup>1</sup>, [Prateek Prasanna](https://you.stonybrook.edu/imaginelab/)<sup>1</sup>, [Tahsin Kurc](https://bmi.stonybrookmedicine.edu/people/tahsin_kurc)<sup>1</sup>, [Joel Saltz](https://bmi.stonybrookmedicine.edu/people/joel_saltz)<sup>1</sup>, [Michael L. Miller](https://scholar.google.com/citations?user=7EVp2IkAAAAJ&hl=en)<sup>4</sup>, [Chao Chen](https://chaochen.github.io/)<sup>1</sup>
 
-<sup>1</sup>Stony Brook University &nbsp; <sup>2</sup>Harvard Medical School &nbsp; <sup>3</sup>Stanford University &nbsp; <sup>4</sup>Columbia University
+<sup>1</sup> Stony Brook University &nbsp;&nbsp; <sup>2</sup> Harvard Medical School &nbsp;&nbsp; <sup>3</sup> Stanford University &nbsp;&nbsp; <sup>4</sup> Columbia University
 
-[![GitHub](https://img.shields.io/badge/GitHub-RankByGene-blue?logo=github)](https://github.com/winston52/RankByGene)
+[![GitHub Project](https://img.shields.io/badge/GitHub-Project-blue?logo=github)](https://github.com/winston52/RankByGene)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+</div>
 
-[![framework](figures/framework.png)](figures/framework.png)
+<p align="center">
+  <img src="figures/framework.png" width="95%">
+</p>
 
 ## Introduction
 
