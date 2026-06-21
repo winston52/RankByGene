@@ -82,6 +82,15 @@ Checkpoints are saved every 5 epochs. Configs for both datasets are provided: `c
 
 `feature_extraction.py` extracts the teacher-branch image features (1024-dim) from a trained checkpoint. It has two modes.
 
+**Pretrained checkpoints.** Download the RankByGene encoder weights from [Google Drive](https://drive.google.com/drive/folders/1_b4v_iDqClf7TWYHyEkyUeBL8XH_tdye?usp=sharing):
+
+| Dataset | Checkpoint |
+|---------|------------|
+| Breast  | `rankbygene_breast.ckpt` |
+| Lung    | `rankbygene_lung.ckpt` |
+
+Pass the downloaded file to `--checkpoint` (shown as `path/to/encoder` in the commands below).
+
 **(a) Gene-prediction features** (`--mode gene`)
 
 Pairs each spot patch with its gene expression and writes one CSV per slide, the layout consumed by `gene_prediction.py`. Run it once per split (e.g. `train` and the held-out `test`):

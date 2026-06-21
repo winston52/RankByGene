@@ -84,7 +84,7 @@ def get_encoder(checkpoint_path):
         init_values=1e-5, num_classes=0, dynamic_img_size=True,
     )
     print(f"Loading RankByGene encoder from {checkpoint_path}")
-    checkpoint = torch.load(checkpoint_path, map_location="cpu")
+    checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     state = checkpoint["state_dict"] if "state_dict" in checkpoint else checkpoint
     image_encoder_state_dict = {
         k.replace("image_encoder.", ""): v
