@@ -5,6 +5,7 @@ timm
 numpy
 pandas
 scipy
+scikit-learn
 Pillow
 h5py
 pyyaml

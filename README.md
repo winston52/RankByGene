@@ -9,7 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </div>
 
-## Introduction
+## 📖 Introduction
 
 **RankByGene** learns gene-informed histopathology image representations by aligning image and gene features through a **cross-modal ranking-consistency loss** that preserves the relative ordering of pairwise similarities across modalities, together with an **intra-modal teacher–student distillation** that stabilizes the image-branch representation. The learned features improve downstream gene expression prediction, slide-level classification, and survival analysis.
 
@@ -17,12 +17,13 @@
   <img src="figures/framework.png" width="95%">
 </p>
 
-## Recent Updates
+## 🔥 Recent Updates
 
-- **2026/06/21**: Released the gene–image alignment training and feature extraction code.
+- **2026/06/21**: Released the gene expression prediction (downstream) code.
+- **2026/06/20**: Released the gene–image alignment training and feature extraction code.
 - **2026/06/19**: Released the data preprocessing code.
 
-## Install
+## 🛠️ Install
 
 ```bash
 git clone https://github.com/winston52/RankByGene.git
@@ -32,7 +33,7 @@ conda activate rankbygene
 pip install -r requirements.txt
 ```
 
-## Step-by-Step Tutorial
+## 🚀 Step-by-Step Tutorial
 
 ### 1. Dataset Preprocessing
 
@@ -92,11 +93,31 @@ python feature_extraction.py \
     --feature_save_dir ./features --model_name rankbygene
 ```
 
-## Acknowledgments
+### 4. Gene Expression Prediction
+
+Using the features extracted above, train a lightweight MLP to predict per-spot gene expression with `gene_prediction.py`. The model is trained on the training-slide features with `--n_splits`-fold cross-validation and evaluated on the held-out external test split, reporting MAE, MSE, and Pearson correlation (PCC):
+
+```bash
+python gene_prediction.py \
+    --train_dataset_name breast --test_dataset_name breast \
+    --train_gene_path ./data/HEST/Breast/ST-expression/survival/8n \
+    --test_gene_path  ./data/HEST/Breast/test/ST-expression/survival/8n \
+    --feature_save_dir ./features --model_name rankbygene \
+    --test_split_name test \
+    --input_dim 1024 --hidden_dim 1024 --output_dim 447 \
+    --epochs 20 --dropout_prob 0.2 --seed 1 --n_splits 5 \
+    --output_path ./predictions
+```
+
+- `--feature_save_dir`, `--model_name`, and `--test_split_name` must match the feature extraction step; features are read from `<feature_save_dir>/<model_name>/{train,<test_split_name>}/`
+- `--output_dim` is the number of genes in the gene list (e.g. 447 for the breast survival list)
+- the per-fold and averaged MAE / MSE / PCC are written to `cv_summary.csv` under `--output_path`
+
+## 🤝 Acknowledgments
 
 Our work builds upon and is grateful to the following projects: [HEST-1k](https://github.com/mahmoodlab/HEST), [UNI](https://github.com/mahmoodlab/UNI), [BLEEP](https://github.com/bowang-lab/BLEEP), and [Human Protein Atlas](https://www.proteinatlas.org/).
 
-## Reference
+## ✏️ Reference
 
 <!-- TODO: citation to be added -->
 ```bibtex
