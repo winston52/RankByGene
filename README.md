@@ -42,7 +42,9 @@ After downloading the raw HEST-1k data (per-slide `.h5ad` expression and ST-patc
 
 - converts each `.h5ad` slide to an expression CSV and a spotfile;
 - extracts per-spot PNG patches;
-- subsets the expression to the survival gene list and applies 8-neighborhood smoothing to produce the per-spot expression for training.
+- subsets the expression to the survival gene list and applies 8-neighborhood smoothing,
+
+to produce the per-spot expression for training.
 
 ```bash
 python data_preprocessing/preprocess_hest.py \
