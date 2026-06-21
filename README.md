@@ -106,8 +106,8 @@ Extract features for every patch of a whole-slide image (gene-free) and write on
 ```
 path/to/patch/
 ├── WSI_1/
-│   ├── 0_0.jpeg
-│   ├── 0_1.jpeg
+│   ├── 0_0.png
+│   ├── 0_1.png
 │   └── ...
 ├── WSI_2/
 │   ├── 0_0.png
