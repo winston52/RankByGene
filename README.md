@@ -99,7 +99,7 @@ python feature_extraction.py --mode gene \
 
 **(b) Whole-slide features for MIL** (`--mode patch`)
 
-Extract features for every patch of a whole-slide image (gene-free) and write one `.h5` per WSI (`features` [N, 1024], `patch_ids` [N], and `coords` [N, 2] when patches are named `x_y`). Both `.png` and `.jpeg` patches are supported.
+Extract features for every patch of a whole-slide image and write one `.h5` per WSI (`features` [N, 1024], `patch_ids` [N], and `coords` [N, 2] when patches are named `x_y`). Both `.png` and `.jpeg` patches are supported.
 
 `--patch_dir` points to a directory of pre-tiled patches. It may be a single WSI folder, or a parent directory holding one sub-folder of patches per WSI; one `<wsi_id>.h5` is written per WSI. The expected layout:
 
