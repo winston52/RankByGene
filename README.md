@@ -42,8 +42,7 @@ After downloading the raw HEST-1k data (per-slide `.h5ad` expression and ST-patc
 
 - converts each `.h5ad` slide to an expression CSV and a spotfile;
 - extracts per-spot PNG patches;
-- builds the survival / top-N gene list used as the supervisory signal;
-- produces the per-spot, gene-list-subset, 8-neighborhood-smoothed expression for training.
+- subsets the expression to the survival gene list and applies 8-neighborhood smoothing to produce the per-spot expression for training.
 
 ```bash
 python data_preprocessing/preprocess_hest.py \
@@ -52,11 +51,9 @@ python data_preprocessing/preprocess_hest.py \
     --expr_out        ./data/HEST/Breast/ST-expression-original \
     --spot_out        ./data/HEST/Breast/ST-spotfiles \
     --patch_out       ./data/HEST/Breast/ST-patches \
-    --favorable_tsv   ./data/HEST/Breast/genelist/prognostic_breast_favorable.tsv \
-    --unfavorable_tsv ./data/HEST/Breast/genelist/prognostic_breast_unfavorable.tsv \
-    --survival_csv    ./data/HEST/Breast/genelist/survival_panel.csv \
+    --panel_genes_csv data_preprocessing/genelist/breast_survival.csv \
     --panel_expr_out  ./data/HEST/Breast/ST-expression/survival/8n \
-    --panel_type survival_top --top_n 250 --smoothing 8n
+    --smoothing 8n
 ```
 
 The survival gene list is derived from the [Human Protein Atlas](https://www.proteinatlas.org/). The gene lists used in our experiments are provided under `data_preprocessing/genelist/` (`breast_survival.csv`, `lung_survival.csv`).
