@@ -80,10 +80,12 @@ Checkpoints are saved every 5 epochs. Configs for both datasets are provided: `c
 
 ### 3. Feature Extraction
 
-Extract gene-informed features from a trained checkpoint with `feature_extraction.py`; the features are saved as one CSV per slide for downstream tasks:
+`feature_extraction.py` extracts the teacher-branch image features (1024-dim) from a trained checkpoint. It has two modes.
+
+**(a) Gene-prediction features** (`--mode gene`) — pairs each spot patch with its gene expression and writes one CSV per slide, the layout consumed by `gene_prediction.py`:
 
 ```bash
-python feature_extraction.py \
+python feature_extraction.py --mode gene \
     --train_dataset_name breast --test_dataset_name breast \
     --train_patch_path ./data/HEST/Breast/ST-patches \
     --train_gene_path  ./data/HEST/Breast/ST-expression/survival/8n \
@@ -91,6 +93,33 @@ python feature_extraction.py \
     --test_gene_path   ./data/HEST/Breast/test/ST-expression/survival/8n \
     --checkpoint ./checkpoints/rankbygene_breast.ckpt \
     --feature_save_dir ./features --model_name rankbygene
+```
+
+**(b) Whole-slide features for MIL** (`--mode patch`) — embeds every patch of a whole-slide image (gene-free) and writes one `.h5` per WSI (`features` [N, 1024], `barcodes` [N], and `coords` [N, 2] when patches are named `x_y`). Both `.png` and `.jpeg` patches are supported:
+
+```bash
+python feature_extraction.py --mode patch \
+    --patch_dir ./data/WSI/single_b20_t20 \
+    --checkpoint ./checkpoints/rankbygene_breast.ckpt \
+    --output_dir ./features_h5
+```
+
+`--patch_dir` may be a single WSI folder, or a parent directory holding one sub-folder of patches per WSI (one `<wsi_id>.h5` is written per WSI).
+
+**Single-patch API** (UNI-style) — embed an individual image:
+
+```python
+import torch
+from PIL import Image
+from feature_extraction import get_encoder, get_transform, extract_features
+
+encoder = get_encoder("./checkpoints/rankbygene_breast.ckpt").cuda().eval()
+transform = get_transform()
+
+image = Image.open("patch.png").convert("RGB")
+image = transform(image).unsqueeze(0).cuda()        # [1, 3, 224, 224]
+with torch.inference_mode():
+    feature_emb = extract_features(encoder, image)   # [1, 1024]
 ```
 
 ### 4. Gene Expression Prediction
