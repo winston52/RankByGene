@@ -34,11 +34,16 @@ pip install -r requirements.txt
 
 ## Step-by-Step Tutorial
 
-### 1. Prepare Data
+### 1. Dataset Preprocessing
 
-We use the publicly available **HEST-1k** dataset ([jaume2024hest](https://github.com/mahmoodlab/HEST)) for spatial transcriptomics, and TCGA / BCNB cohorts for downstream classification and survival analysis.
+We use the publicly available [**HEST-1k**](https://github.com/mahmoodlab/HEST) dataset for spatial transcriptomics, and TCGA / BCNB cohorts for downstream classification and survival analysis.
 
-After downloading the raw HEST-1k data (per-slide `.h5ad` expression and ST-patch `.h5` files), run the preprocessing script `data_preprocessing/preprocess_hest.py`, which (i) converts each `.h5ad` slide to an expression CSV and a spotfile, (ii) extracts per-spot PNG patches, (iii) builds the survival/top-N gene panels used as the supervisory signal, and (iv) produces the per-spot, panel-subset, 8-neighborhood-smoothed expression consumed by training:
+After downloading the raw HEST-1k data (per-slide `.h5ad` expression and ST-patch `.h5` files), run the preprocessing script `data_preprocessing/preprocess_hest.py`, which:
+
+- converts each `.h5ad` slide to an expression CSV and a spotfile;
+- extracts per-spot PNG patches;
+- builds the survival / top-N gene list used as the supervisory signal;
+- produces the per-spot, gene-list-subset, 8-neighborhood-smoothed expression for training.
 
 ```bash
 python data_preprocessing/preprocess_hest.py \
@@ -54,7 +59,7 @@ python data_preprocessing/preprocess_hest.py \
     --panel_type survival_top --top_n 250 --smoothing 8n
 ```
 
-The survival (prognostic) gene panels are derived from the [Human Protein Atlas](https://www.proteinatlas.org/) favorable/unfavorable prognostic gene lists. The gene panels used in our experiments are provided under `data_preprocessing/genelist/` (`breast_survival.csv`, `lung_survival.csv`).
+The survival gene list is derived from the [Human Protein Atlas](https://www.proteinatlas.org/). The gene lists used in our experiments are provided under `data_preprocessing/genelist/` (`breast_survival.csv`, `lung_survival.csv`).
 
 ### 2. Training
 
@@ -64,7 +69,7 @@ Train the gene-guided image encoder with `train.py`, which optimizes the cross-m
 python train.py --config configs/breast_rankinfots_survival.yaml
 ```
 
-Before training, set the following fields in `configs/*.yaml`: `MODEL.pretrained_model_path` (UNI backbone weights), `DATASET.train_dataset_path` (preprocessed dataset root), `DATASET.gene_path` (per-spot panel expression), and `EXPERIMENT_DIR` (output directory). Checkpoints are saved every 5 epochs (plus `last.ckpt`). Configs for both datasets are provided: `configs/breast_rankinfots_survival.yaml` and `configs/lung_rankinfots_survival.yaml`.
+Before training, set the following fields in `configs/*.yaml`: `MODEL.pretrained_model_path` (UNI backbone weights), `DATASET.train_dataset_path` (preprocessed dataset root), `DATASET.gene_path` (per-spot gene-list expression), and `EXPERIMENT_DIR` (output directory). Checkpoints are saved every 5 epochs (plus `last.ckpt`). Configs for both datasets are provided: `configs/breast_rankinfots_survival.yaml` and `configs/lung_rankinfots_survival.yaml`.
 
 ### 3. Feature Extraction
 
