@@ -93,10 +93,9 @@ Pass the downloaded file to `--checkpoint` (shown as `path/to/encoder` in the co
 
 **(a) Gene-prediction features** (`--mode gene`)
 
-Pairs each spot patch with its gene expression and writes one CSV per slide, the layout consumed by `gene_prediction.py`. Run it once per split (e.g. `train` and the held-out `test`):
+Pairs each spot patch with its gene expression and writes one CSV per slide, the layout consumed by `gene_prediction.py`. Run it once per split:
 
 ```bash
-# training split
 python feature_extraction.py --mode gene \
     --dataset_name breast \
     --patch_path ./data/HEST/Breast/ST-patches \
@@ -104,16 +103,9 @@ python feature_extraction.py --mode gene \
     --checkpoint path/to/encoder \
     --feature_save_dir ./features --model_name rankbygene \
     --split_name train
-
-# test split
-python feature_extraction.py --mode gene \
-    --dataset_name breast \
-    --patch_path ./data/HEST/Breast/test/ST-patches \
-    --gene_path  ./data/HEST/Breast/test/ST-expression/survival/8n \
-    --checkpoint path/to/encoder \
-    --feature_save_dir ./features --model_name rankbygene \
-    --split_name test
 ```
+
+Run the same command for the held-out test split, pointing `--patch_path` / `--gene_path` to the test-split directories and setting `--split_name test`.
 
 **(b) Whole-slide features for MIL** (`--mode patch`)
 
