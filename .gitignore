@@ -19,3 +19,6 @@ rank_orders/
 
 # local test outputs
 tmp/
+
+# credentials (never commit)
+.gh_token
