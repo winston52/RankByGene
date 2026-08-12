@@ -22,3 +22,7 @@ tmp/
 
 # credentials (never commit)
 .gh_token
+.overleaf_token
+
+# local Overleaf clone (manuscript, not part of the code release)
+overleaf/
